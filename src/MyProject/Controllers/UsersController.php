@@ -1,6 +1,9 @@
 <?php 
 namespace MyProject\Controllers;
 use MyProject\View\View;
+use MyProject\Models\Users\User;
+use MyProject\Exceptions\InvalidArgumentException;
+
 
 class UsersController
 {
@@ -13,6 +16,16 @@ class UsersController
 
     public function singUp()
     {
+        if(!empty($_POST))
+        {
+            try {
+                $user = User::singUp($_POST);
+            } catch (InvalidArgumentException $e) {
+               $this->view->renderHtml('/users/singUp.php',['error' => $e->getMessage()]);
+               return;
+            }
+           
+        }
         $this->view->renderHtml('/users/singUp.php');
     }
 }
