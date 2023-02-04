@@ -8,6 +8,7 @@ return [
 	'~^articles/(\d+)/edit$~'=>[\MyProject\Controllers\ArticlesController::class, 'edit'],
 	'~^articles/add$~'=>[\MyProject\Controllers\ArticlesController::class, 'add'],
 	'~^users/register$~'=>[\MyProject\Controllers\UsersController::class, 'singUp'],
+	'~^users/(\d+)/activate/(.+)$~' => [\MyProject\Controllers\UsersController::class, 'activate'],
 ];
 
 

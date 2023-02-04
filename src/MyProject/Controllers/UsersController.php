@@ -25,12 +25,28 @@ class UsersController
                return;
             }
             if ($user instanceof User) {
+                $code = UserActivationService::createActivationCode($user);
+
+                EmailSender::send($user, 'Активация', 'userActivation.php', [
+                    'userId' => $user->getId(),
+                    'code' => $code
+                ]);
+
                 $this->view->renderHtml('users/signUpSuccessful.php');
                 return;
             }
            
         }
         $this->view->renderHtml('/users/singUp.php');
+    }
+    public function activate(int $userId, string $activationCode)
+    {
+        $user = User::getById($userId);
+        $isCodeValid = UserActivationService::checkActivationCode($user, $activationCode);
+        if ($isCodeValid) {
+            $user->activate();
+            echo 'OK!';
+        }
     }
 }
 
