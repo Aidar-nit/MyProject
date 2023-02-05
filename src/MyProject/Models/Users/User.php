@@ -24,6 +24,14 @@ class User extends ActiveRecordEntity
 		return 'users';
 	}
 
+	public function getAuthToken():string
+	{
+		return $this->authToken;
+	}
+	public function getPasswordHash():string
+	{
+		return $this->passwordHash;
+	}
 
 	public function getNickName():string
 	{
@@ -82,6 +90,37 @@ class User extends ActiveRecordEntity
 	{
 		$this->isConfirmed = true;
 		$this->save();
+	}
+
+	public static function login(array $loginData):User 
+	{
+		if (empty($loginData['email'])) {
+			throw new InvalidArgumentException("Enter Email");
+		}
+		if (empty($loginData['password'])) {
+			throw new InvalidArgumentException('Enter password');
+		}
+		$user = User::findOneByColumn('email',$loginData['email']);
+
+		if ($user === null) {
+			throw new InvalidArgumentException('Пользователя с таким емайл нет');
+		}
+		if (!password_verify($loginData['password'], $user->getPasswordHash())) {
+			throw new InvalidArgumentException('неверный Пароль');
+		}
+		if (!$user->isConfirmed) {
+			throw new InvalidArgumentException('Пользователь на подтвержден');
+		}
+
+		$user->refreshAuthToken();
+		$user->save();
+
+		return $user;
+	}
+
+	public function refreshAuthToken()
+	{
+		$this->authToken = sha1(random_bytes(100)) . sha1(random_bytes(100));
 	}
 }
 

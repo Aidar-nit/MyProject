@@ -13,5 +13,11 @@
             Мой блог
         </td>
     </tr>
+     <tr>
+        <td colspan="2" style="text-align: right">
+            <?= !empty($user) ? 'Привет, ' . $user->getNickname().' | <a href = "/users/logout">Выйти</a>'
+             : '<a href="/users/login">Войдите на сайт</a> | <a href="/users/register">Зарегистрироваться</a>' ?>
+        </td>
+    </tr>
     <tr>
         <td>

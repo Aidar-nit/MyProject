@@ -8,16 +8,9 @@ use MyProject\Models\Users\User;
 use MyProject\Exceptions\NotFoundException;
 
 
-class ArticlesController
+class ArticlesController extends AbstractController
 {
-	private $view;
-
-
-	public function __construct()
-	{
-		$this->view = new View(__DIR__.'/../../../templates');
 	
-	}
 
 	public function view(int $articleId): void
 	{
