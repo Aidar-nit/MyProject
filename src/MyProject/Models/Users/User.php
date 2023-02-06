@@ -23,6 +23,25 @@ class User extends ActiveRecordEntity
 	{
 		return 'users';
 	}
+	
+	/*public function isAdmin():bool
+	{
+		if($this->role !== 'admin')
+		{
+			return false;
+		}
+		return true;
+	}*/
+
+	public function isAdmin(): bool
+	{
+	    return $this->getRole() === 'admin';
+	}
+	
+	public function getRole():string
+	{
+		return $this->role;
+	}
 
 	public function getAuthToken():string
 	{

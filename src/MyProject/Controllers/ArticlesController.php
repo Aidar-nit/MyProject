@@ -6,6 +6,9 @@ use MyProject\Services\DB;
 use MyProject\Models\Articles\Article;
 use MyProject\Models\Users\User;
 use MyProject\Exceptions\NotFoundException;
+use MyProject\Exceptions\UnauthorizedException;
+use MyProject\Exceptions\InvalidArgumentException;
+use MyProject\Exceptions\Forbidden;
 
 
 class ArticlesController extends AbstractController
@@ -41,14 +44,27 @@ class ArticlesController extends AbstractController
 
 	public function add():void 
 	{
-		$author = User::getById(1);
+		if ($this->user === null) {
+			throw new UnauthorizedException("Пользователь не авторизован");
+		}
+		if (!$this->user->isAdmin()) {
+			throw new Forbidden('Доступно только для администратора');
+		}
+		
 
-		$article = new Article();
-		$article->setAuthor($author);
-		$article->setName('New Name');
-		$article->setText('New Text');
-		$article->save();
-		//var_dump($article);
+		if (!empty($_POST)) {
+			try {
+				$article = Article::createFromArray($_POST, $this->user);
+			} catch (InvalidArgumentException $e) {
+				$this->view->renderHtml('articles/add.php', ['error' => $e->getMessage()]);
+            	return;
+			}
+
+			header('Location: /articles/'.$article->getId(), true, 302);
+			exit();
+		}
+		
+		$this->view->renderHtml('articles/add.php');
 	}
 	
 	
