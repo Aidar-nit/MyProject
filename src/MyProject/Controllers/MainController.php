@@ -11,7 +11,7 @@ class MainController extends AbstractController
 		
 		$articles = Article::findAll();
 		
-		$this->view->renderHtml('main/main.php',['articles'=>$articles]);
+		$this->view->renderHtml('main/main.php',['articles'=>$articles,'user'=>$this->user]);
 
 	}
 

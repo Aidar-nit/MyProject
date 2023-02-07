@@ -36,10 +36,25 @@ class ArticlesController extends AbstractController
 	    if ($article === null) {
 	        throw new NotFoundException();
 	    }
+	    if ($this->user === null) {
+	    	throw new UnauthorizedException("Пользователь не авторизован");
+	    }
+	    if (!$this->user->isAdmin()) {
+			throw new Forbidden('Доступно только для администратора');
+		}
 
-	    $article->setName('Новое название статьи');
-	    $article->setText('Новый текст статьи');
-	    $article->save();
+	    if (!empty($_POST)) {
+	    	try {
+	    		$article->updateFromArray($_POST);
+	    	} catch (InvalidArgumentException $e) {
+	    		$this->view->renderHtml('articles/edit.php',['error'=>$e->getMessage(), 'article'=>$article]);
+	    		return;
+	    	}
+	    	header('Location: /articles/'.$article->getId(), true, 302);
+	    	exit();
+	    }
+	    $this->view->renderHtml('articles/edit.php',['article' => $article]);
+
 	}
 
 	public function add():void 
@@ -60,11 +75,11 @@ class ArticlesController extends AbstractController
             	return;
 			}
 
-			header('Location: /articles/'.$article->getId(), true, 302);
+			header('Location: /articles/' .$article->getId(), true, 302);
 			exit();
 		}
 		
-		$this->view->renderHtml('articles/add.php');
+		$this->view->renderHtml('articles/add.php', ['article' => $article]);
 	}
 	
 	
