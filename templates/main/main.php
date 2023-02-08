@@ -4,6 +4,7 @@
     <p><?=$article->getText()?></p>
     <?php if (!empty($user) && $user->isAdmin()): ?>
         <a href="articles/<?=$article->getId()?>/edit">Редактировать</a>
+        <a href="articles/<?=$article->getId()?>/delete">Удалить</a>
     <?php endif ?>
     <hr>
     

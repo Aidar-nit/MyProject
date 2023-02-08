@@ -82,7 +82,12 @@ class ArticlesController extends AbstractController
 		$this->view->renderHtml('articles/add.php', ['article' => $article]);
 	}
 	
-	
+	public function deleteArticle(int $articleId)
+	{
+		Article::deleteById($articleId);
+		header('Location: /', true, 302);
+		exit();
+	}
 }
 
 
